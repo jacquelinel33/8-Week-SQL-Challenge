@@ -14,6 +14,7 @@ SELECT
 FROM dannys_diner.sales
 JOIN dannys_diner.menu ON sales.product_id = menu.product_id
 GROUP BY customer_id
+```
 
 | customer_id | total_spend |
 | ----------- | ----------- |
