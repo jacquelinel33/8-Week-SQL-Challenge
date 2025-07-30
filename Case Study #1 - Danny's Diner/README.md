@@ -14,12 +14,13 @@ SELECT
 FROM dannys_diner.sales
 JOIN dannys_diner.menu ON sales.product_id = menu.product_id
 GROUP BY customer_id
+ORDER BY customer_id
 
 | customer_id | total_spend |
 | ----------- | ----------- |
+| A           | 76          |
 | B           | 74          |
 | C           | 36          |
-| A           | 76          |
 ```
 
 2. How many days has each customer visited the restaurant?
@@ -29,6 +30,7 @@ SELECT
     COUNT(DISTINCT order_date) as days_visited
 FROM dannys_diner.sales
 GROUP BY customer_id
+ORDER BY customer_id
 
 | customer_id | days_visited |
 | ----------- | ------------ |
@@ -40,7 +42,23 @@ GROUP BY customer_id
 
 3. What was the first item from the menu purchased by each customer?
 
+
 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+``` sql
+SELECT
+  product_id,
+  COUNT(product_id) AS purchase_count
+FROM dannys_diner.sales
+GROUP BY product_id
+ORDER BY purchase_count DESC
+
+| product_id | purchase_count |
+| ---------- | -------------- |
+| 3          | 8              |
+| 2          | 4              |
+| 1          | 3              |
+```
+
 5. Which item was the most popular for each customer?
 6. Which item was purchased first by the customer after they became a member?
 7. Which item was purchased just before the customer became a member?

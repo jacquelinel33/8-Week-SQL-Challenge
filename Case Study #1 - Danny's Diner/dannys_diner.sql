@@ -54,15 +54,33 @@ VALUES
 
 -- returns total amount each customer spent
 SELECT
-  	sales.customer_id,
-    SUM(menu.price) as Total_Spend
+  sales.customer_id,
+  SUM(menu.price) as Total_Spend
 FROM dannys_diner.sales
 JOIN dannys_diner.menu ON sales.product_id = menu.product_id
 GROUP BY customer_id
+ORDER BY customer_id
 
 -- returns number of distinct days a customers has visited
 SELECT
-  	sales.customer_id,
-    COUNT(DISTINCT order_date) as days_visited
+  sales.customer_id,
+  COUNT(DISTINCT order_date) as days_visited
 FROM dannys_diner.sales
 GROUP BY customer_id
+ORDER BY customer_id
+
+--returns the first menu item ordered by each customer
+SELECT
+  sales.customer_id,
+  MIN(sales.order_date)
+FROM dannys_diner.sales
+GROUP BY sales.customer_id
+ORDER BY sales.customer_id, sales.order_date
+
+--What is the most purchased item on the menu and how many times was it purchased by all customers?
+SELECT
+  product_id,
+  COUNT(product_id) AS purchase_count
+FROM dannys_diner.sales
+GROUP BY product_id
+ORDER BY purchase_count DESC
