@@ -46,17 +46,20 @@ ORDER BY customer_id
 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 ``` sql
 SELECT
-  product_id,
-  COUNT(product_id) AS purchase_count
+  menu.product_name,
+  COUNT(sales.product_id) AS purchase_count
 FROM dannys_diner.sales
-GROUP BY product_id
+JOIN 
+  dannys_diner.menu 
+  ON sales.product_id = menu.product_id
+GROUP BY menu.product_name
 ORDER BY purchase_count DESC
 
-| product_id | purchase_count |
-| ---------- | -------------- |
-| 3          | 8              |
-| 2          | 4              |
-| 1          | 3              |
+| product_name | purchase_count |
+| ------------ | -------------- |
+| ramen        | 8              |
+| curry        | 4              |
+| sushi        | 3              |
 ```
 
 5. Which item was the most popular for each customer?
