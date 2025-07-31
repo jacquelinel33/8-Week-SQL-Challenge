@@ -105,11 +105,52 @@ FROM (
     customer_id,
     product_name,
     COUNT(product_name) as product_count,
-    RANK() OVER (PARTITION BY customer_id ORDER BY COUNT(product_name) DESC)
+    RANK() OVER (PARTITION BY customer_id ORDER BY COUNT(product_name) DESC) as rank
   FROM dannys_diner.sales 
   JOIN dannys_diner.menu ON sales.product_id = menu.product_id
   GROUP BY customer_id, product_name) as ranked
 WHERE rank = 1
+
+--6. Which item was purchased first by the customer after they became a member?
+SELECT
+  customer_id,
+  product_name,
+  join_date,
+  order_date
+FROM
+  (SELECT 
+    sales.customer_id,
+    product_name,
+    join_date,
+    order_date,
+    RANK() OVER(PARTITION BY sales.customer_id ORDER BY order_date) as rank
+  FROM dannys_diner.sales
+  JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+  LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
+  WHERE order_date > join_date) as ranked
+WHERE rank = 1 
+
+--7. Which item was purchased just before the customer became a member?
+SELECT
+  customer_id,
+  product_name,
+  join_date,
+  order_date
+FROM
+  (SELECT 
+    sales.customer_id,
+    product_name,
+    join_date,
+    order_date,
+    RANK() OVER(PARTITION BY sales.customer_id ORDER BY order_date DESC) as rank
+  FROM dannys_diner.sales
+  JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+  LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
+  WHERE order_date < join_date) as ranked
+WHERE rank = 1 
+--8. What is the total items and amount spent for each member before they became a member?
+--9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+--10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
 
 
 

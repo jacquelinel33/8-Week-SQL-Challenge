@@ -2,7 +2,7 @@
 
 ### Business Task
 1. Write SQL queries to help the owner analyze his customers including visiting patterns, customer spending habits, and favorite menu items.
-2. Use the insights to make decisions around expanding the existing customer loyalty program
+2. Use the insights to make decisions around expanding the existing customer loyalty program.
 3. Generate basic datasets for the team to inspect on their own without writing SQL.
 
 ### Case Study Questions
@@ -111,7 +111,60 @@ WHERE rank = 1
 | C           | ramen        | 3             |
 ```
 6. Which item was purchased first by the customer after they became a member?
+
+```sql
+SELECT
+  customer_id,
+  product_name,
+  join_date,
+  order_date
+FROM
+  (SELECT 
+    sales.customer_id,
+    product_name,
+    join_date,
+    order_date,
+    RANK() OVER(PARTITION BY sales.customer_id ORDER BY order_date) as rank
+  FROM dannys_diner.sales
+  JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+  LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
+  WHERE order_date > join_date) as ranked
+WHERE rank = 1 
+
+| customer_id | product_name | join_date  | order_date |
+| ----------- | ------------ | ---------- | ---------- |
+| A           | ramen        | 2021-01-07 | 2021-01-10 |
+| B           | sushi        | 2021-01-09 | 2021-01-11 |
+```
+
 7. Which item was purchased just before the customer became a member?
+```sql
+--7. Which item was purchased just before the customer became a member?
+SELECT
+  customer_id,
+  product_name,
+  join_date,
+  order_date
+FROM
+  (SELECT 
+    sales.customer_id,
+    product_name,
+    join_date,
+    order_date,
+    RANK() OVER(PARTITION BY sales.customer_id ORDER BY order_date DESC) as rank
+  FROM dannys_diner.sales
+  JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+  LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
+  WHERE order_date < join_date) as ranked
+WHERE rank = 1 
+
+| customer_id | product_name | join_date  | order_date |
+| ----------- | ------------ | ---------- | ---------- |
+| A           | sushi        | 2021-01-07 | 2021-01-01 |
+| A           | curry        | 2021-01-07 | 2021-01-01 |
+| B           | sushi        | 2021-01-09 | 2021-01-04 |
+```
+
 8. What is the total items and amount spent for each member before they became a member?
 9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
