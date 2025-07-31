@@ -1,7 +1,12 @@
 # Case Study #1: Danny's Diner
 
+**Source:**[8 Week SQL Challenge - Case Study #1](https://8weeksqlchallenge.com/case-study-1)
+
+### About the Challenge
+This case study is part of Danny Ma's 8 Week SQL Challenge series. The scenario involves analyzing customer data for a Japanese restaurant to help with business decisions and customer loyalty program expansion.
+
 ### Business Task
-1. Write SQL queries to help the owner analyze his customers including visiting patterns, customer spending habits, and favorite menu items.
+1. Write SQL queries to analyze Danny's Diners customers including visiting patterns, customer spending habits, and favorite menu items.
 2. Use the insights to make decisions around expanding the existing customer loyalty program.
 3. Generate basic datasets for the team to inspect on their own without writing SQL.
 
