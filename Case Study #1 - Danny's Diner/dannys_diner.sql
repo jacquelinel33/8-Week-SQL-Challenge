@@ -71,11 +71,18 @@ ORDER BY customer_id
 
 --returns the first menu item ordered by each customer
 SELECT
-  sales.customer_id,
-  MIN(sales.order_date)
-FROM dannys_diner.sales
-GROUP BY sales.customer_id
-ORDER BY sales.customer_id, sales.order_date
+  customer_id,
+  product_name,
+  order_date,
+FROM (
+  SELECT 
+   customer_id,
+   product_name, 
+   order_date,
+   RANK() OVER(PARTITION BY customer_id ORDER BY order_date) as rank
+  FROM dannys_diner.sales
+  JOIN dannys_diner.menu ON sales.product_id = menu.product_id) as ranked_dates
+WHERE rank = 1
 
 --What is the most purchased item on the menu and how many times was it purchased by all customers?
 SELECT

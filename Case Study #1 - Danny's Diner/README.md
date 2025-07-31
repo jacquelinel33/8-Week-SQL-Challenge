@@ -41,6 +41,29 @@ ORDER BY customer_id
 
 
 3. What was the first item from the menu purchased by each customer?
+```sql
+SELECT
+  customer_id,
+  product_name,
+  order_date
+FROM (
+  SELECT 
+   customer_id,
+   product_name, 
+   order_date,
+   RANK() OVER(PARTITION BY customer_id ORDER BY order_date) as rank
+  FROM dannys_diner.sales
+  JOIN dannys_diner.menu ON sales.product_id = menu.product_id) as ranked_dates
+WHERE rank = 1
+
+| customer_id | product_name | order_date |
+| ----------- | ------------ | ---------- |
+| A           | curry        | 2021-01-01 |
+| A           | sushi        | 2021-01-01 |
+| B           | curry        | 2021-01-01 |
+| C           | ramen        | 2021-01-01 |
+| C           | ramen        | 2021-01-01 |
+```
 
 
 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
