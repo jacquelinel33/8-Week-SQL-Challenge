@@ -79,8 +79,33 @@ ORDER BY sales.customer_id, sales.order_date
 
 --What is the most purchased item on the menu and how many times was it purchased by all customers?
 SELECT
-  product_id,
-  COUNT(product_id) AS purchase_count
+  menu.product_name,
+  COUNT(sales.product_id) AS purchase_count
 FROM dannys_diner.sales
-GROUP BY product_id
+JOIN 
+  dannys_diner.menu 
+  ON sales.product_id = menu.product_id
+GROUP BY menu.product_name
 ORDER BY purchase_count DESC
+
+-- Counts # of orders by customer and product name
+SELECT
+  customer_id,
+  product_name,
+  product_count
+FROM (
+  SELECT 
+    customer_id,
+    product_name,
+    COUNT(product_name) as product_count,
+    RANK() OVER (PARTITION BY customer_id ORDER BY COUNT(product_name) DESC)
+  FROM dannys_diner.sales 
+  JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+  GROUP BY customer_id, product_name) as ranked
+WHERE rank = 1
+
+
+
+
+
+

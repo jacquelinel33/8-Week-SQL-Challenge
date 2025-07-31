@@ -63,6 +63,30 @@ ORDER BY purchase_count DESC
 ```
 
 5. Which item was the most popular for each customer?
+```sql
+SELECT
+  customer_id,
+  product_name,
+  product_count
+FROM (
+  SELECT 
+    customer_id,
+    product_name,
+    COUNT(product_name) as product_count,
+    RANK() OVER (PARTITION BY customer_id ORDER BY COUNT(product_name) DESC)
+  FROM dannys_diner.sales 
+  JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+  GROUP BY customer_id, product_name) as ranked
+WHERE rank = 1
+
+| customer_id | product_name | product_count |
+| ----------- | ------------ | ------------- |
+| A           | ramen        | 3             |
+| B           | ramen        | 2             |
+| B           | curry        | 2             |
+| B           | sushi        | 2             |
+| C           | ramen        | 3             |
+```
 6. Which item was purchased first by the customer after they became a member?
 7. Which item was purchased just before the customer became a member?
 8. What is the total items and amount spent for each member before they became a member?
