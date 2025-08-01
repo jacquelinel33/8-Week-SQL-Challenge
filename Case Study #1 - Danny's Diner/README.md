@@ -1,6 +1,6 @@
 # Case Study #1: Danny's Diner
 
-**Source:**[8 Week SQL Challenge - Case Study #1](https://8weeksqlchallenge.com/case-study-1)
+**Source:** [8 Week SQL Challenge - Case Study #1](https://8weeksqlchallenge.com/case-study-1)
 
 ### About the Challenge
 This case study is part of Danny Ma's 8 Week SQL Challenge series. The scenario involves analyzing customer data for a Japanese restaurant to help with business decisions and customer loyalty program expansion.
@@ -44,7 +44,6 @@ ORDER BY customer_id
 | C           | 2            |
 ```
 
-
 3. What was the first item from the menu purchased by each customer?
 ```sql
 SELECT
@@ -69,7 +68,6 @@ WHERE rank = 1
 | C           | ramen        | 2021-01-01 |
 | C           | ramen        | 2021-01-01 |
 ```
-
 
 4. What is the most purchased item on the menu and how many times was it purchased by all customers?
 ``` sql
@@ -115,8 +113,8 @@ WHERE rank = 1
 | B           | sushi        | 2             |
 | C           | ramen        | 3             |
 ```
-6. Which item was purchased first by the customer after they became a member?
 
+6. Which item was purchased first by the customer after they became a member?
 ```sql
 SELECT
   customer_id,
@@ -186,6 +184,7 @@ GROUP BY sales.customer_id
 | B           | 3           | 40          |
 | A           | 2           | 25          |
 ```
+
 9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 ```sql
 SELECT
@@ -207,6 +206,5 @@ GROUP BY sales.customer_id
 | C           | 360    |
 | A           | 860    |
 ```
-
 
 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
