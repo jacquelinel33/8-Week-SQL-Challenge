@@ -248,3 +248,39 @@ GROUP BY customer_id
 | B           | 820          |
 
 ### Bonus Questions
+Recreate the follow table outpout using the availalble data.
+
+| customer_id | order_date | product_name | price | member |
+| ----------- | ---------- | ------------ | ----- | ------ |
+| A           | 2021-01-01 | curry        | 15    | N      |
+| A           | 2021-01-01 | sushi        | 10    | N      |
+| A           | 2021-01-07 | curry        | 15    | Y      |
+| A           | 2021-01-10 | ramen        | 12    | Y      |
+| A           | 2021-01-11 | ramen        | 12    | Y      |
+| A           | 2021-01-11 | ramen        | 12    | Y      |
+| B           | 2021-01-01 | curry        | 15    | N      |
+| B           | 2021-01-02 | curry        | 15    | N      |
+| B           | 2021-01-04 | sushi        | 10    | N      |
+| B           | 2021-01-11 | sushi        | 10    | Y      |
+| B           | 2021-01-16 | ramen        | 12    | Y      |
+| B           | 2021-02-01 | ramen        | 12    | Y      |
+| C           | 2021-01-01 | ramen        | 12    | N      |
+| C           | 2021-01-01 | ramen        | 12    | N      |
+| C           | 2021-01-07 | ramen        | 12    | N      |
+
+```sql
+SELECT 
+  sales.customer_id,
+  sales.order_date,
+  menu.product_name,
+  menu.price,
+  CASE 
+    WHEN members.join_date IS NOT NULL AND sales.order_date >= members.join_date
+    THEN 'Y'
+    ELSE 'N'
+    END AS member
+FROM dannys_diner.sales
+JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
+ORDER BY sales.customer_id, sales.order_date 
+```

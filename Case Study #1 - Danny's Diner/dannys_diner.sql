@@ -209,6 +209,19 @@ SELECT
 FROM bonus_cte
 GROUP BY customer_id
 
-
-
+--recreate table
+SELECT 
+  sales.customer_id,
+  sales.order_date,
+  menu.product_name,
+  menu.price,
+  CASE 
+    WHEN members.join_date IS NOT NULL AND sales.order_date >= members.join_date
+    THEN 'Y'
+    ELSE 'N'
+    END AS member
+FROM dannys_diner.sales
+JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
+ORDER BY sales.customer_id, sales.order_date 
 
