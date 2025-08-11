@@ -209,7 +209,7 @@ SELECT
 FROM bonus_cte
 GROUP BY customer_id
 
---recreate table
+--recreate table join all the things 
 SELECT 
   sales.customer_id,
   sales.order_date,
@@ -225,3 +225,31 @@ JOIN dannys_diner.menu ON sales.product_id = menu.product_id
 LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
 ORDER BY sales.customer_id, sales.order_date 
 
+--recreate table rank all the things
+SELECT 
+  customer_id,
+  order_date,
+  product_name,
+  price,
+  member,
+  CASE
+    WHEN member = 'Y'
+    THEN RANK() OVER(PARTITION BY customer_id, member ORDER BY order_date)
+    ELSE NULL
+    END AS rank
+FROM (
+  SELECT 
+  sales.customer_id,
+  sales.order_date,
+  menu.product_name,
+  menu.price,
+  CASE 
+    WHEN members.join_date IS NOT NULL AND sales.order_date >= members.join_date
+    THEN 'Y'
+    ELSE 'N'
+    END AS member
+FROM dannys_diner.sales
+JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
+ORDER BY sales.customer_id, sales.order_date) as sales
+-- ORDER BY sales.customer_id, sales.order_date

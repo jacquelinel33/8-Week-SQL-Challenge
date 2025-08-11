@@ -248,8 +248,9 @@ GROUP BY customer_id
 | B           | 820          |
 
 ### Bonus Questions
-Recreate the follow table outpout using the availalble data.
+Recreate the following table output using the available data.
 
+#### Join All The Things
 | customer_id | order_date | product_name | price | member |
 | ----------- | ---------- | ------------ | ----- | ------ |
 | A           | 2021-01-01 | curry        | 15    | N      |
@@ -268,6 +269,7 @@ Recreate the follow table outpout using the availalble data.
 | C           | 2021-01-01 | ramen        | 12    | N      |
 | C           | 2021-01-07 | ramen        | 12    | N      |
 
+**solution**
 ```sql
 SELECT 
   sales.customer_id,
@@ -283,4 +285,52 @@ FROM dannys_diner.sales
 JOIN dannys_diner.menu ON sales.product_id = menu.product_id
 LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
 ORDER BY sales.customer_id, sales.order_date 
+```
+#### Rank All The Things
+| customer_id | order_date | product_name | price | member | ranking |
+| ----------- | ---------- | ------------ | ----- | ------ | ------- |
+| A           | 2021-01-01 | curry        | 15    | N      | null    |
+| A           | 2021-01-01 | sushi        | 10    | N      | null    |
+| A           | 2021-01-07 | curry        | 15    | Y      | 1       |
+| A           | 2021-01-10 | ramen        | 12    | Y      | 2       |
+| A           | 2021-01-11 | ramen        | 12    | Y      | 3       |
+| A           | 2021-01-11 | ramen        | 12    | Y      | 3       |
+| B           | 2021-01-01 | curry        | 15    | N      | null    |
+| B           | 2021-01-02 | curry        | 15    | N      | null    |
+| B           | 2021-01-04 | sushi        | 10    | N      | null    |
+| B           | 2021-01-11 | sushi        | 10    | Y      | 1       |
+| B           | 2021-01-16 | ramen        | 12    | Y      | 2       |
+| B           | 2021-02-01 | ramen        | 12    | Y      | 3       |
+| C           | 2021-01-01 | ramen        | 12    | N      | null    |
+| C           | 2021-01-01 | ramen        | 12    | N      | null    |
+| C           | 2021-01-07 | ramen        | 12    | N      | null    |
+
+**solution**
+```sql
+SELECT 
+  customer_id,
+  order_date,
+  product_name,
+  price,
+  member,
+  CASE
+    WHEN member = 'Y'
+    THEN RANK() OVER(PARTITION BY customer_id, member ORDER BY order_date)
+    ELSE NULL
+    END AS rank
+FROM (
+  SELECT 
+  sales.customer_id,
+  sales.order_date,
+  menu.product_name,
+  menu.price,
+  CASE 
+    WHEN members.join_date IS NOT NULL AND sales.order_date >= members.join_date
+    THEN 'Y'
+    ELSE 'N'
+    END AS member
+FROM dannys_diner.sales
+JOIN dannys_diner.menu ON sales.product_id = menu.product_id
+LEFT JOIN dannys_diner.members ON sales.customer_id = members.customer_id
+ORDER BY sales.customer_id, sales.order_date) as sales
 ```
