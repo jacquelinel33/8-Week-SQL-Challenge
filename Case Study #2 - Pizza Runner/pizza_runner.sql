@@ -114,5 +114,29 @@ VALUES
   (11, 'Tomatoes'),
   (12, 'Tomato Sauce');
 
-  SELECT *
-  FROM pizza_runner
+SELECT *
+FROM pizza_runner.customer_orders
+
+-- Count number of null values in column
+SELECT COUNT(*) as NullCount
+FROM pizza_runner.customer_orders
+WHERE exclusions IS NULL
+
+SELECT COUNT(*) as NullCount
+FROM pizza_runner.customer_orders
+WHERE exclusions IS NULL
+
+-- Check for NULL data types in column
+SELECT *
+FROM pizza_runner.customer_orders
+WHERE exclusions IS NULL
+
+-- set all blanks or string "nulls" to NULL
+UPDATE pizza_runner.customer_orders
+SET 
+    exclusions = NULL,
+    extras = NULL
+WHERE 
+    exclusions = 'null' OR exclusions = '' OR
+    extras = 'null' OR extras = '';
+
