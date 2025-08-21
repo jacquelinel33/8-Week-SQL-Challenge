@@ -149,3 +149,76 @@ SET
   distance = CASE WHEN distance = 'null' OR distance = '' THEN NULL ELSE distance END,
   duration = CASE WHEN duration = 'null' OR duration = '' THEN NULL ELSE duration END,
   cancellation = CASE WHEN cancellation = 'null' OR cancellation = '' THEN NULL ELSE cancellation END;
+
+SELECT *
+FROM customer_runner_cte
+--1. How many pizzas were ordered?
+-- Count all pizza orders from customer_orders
+SELECT count(pizza_id)
+FROM pizza_runner.customer_orders
+
+-- 2. How many unique customer orders were made?
+-- Count number of distinct orders
+SELECT count(DISTINCT order_id)
+FROM pizza_runner.customer_orders
+
+--3. How many successful orders were delivered by each runner?
+-- Use cancellation column as metric of successful order. If cancellation is null, then the order was successful
+SELECT count(CASE WHEN cancellation IS NULL THEN 1 END) as successful_orders_count
+FROM pizza_runner.runner_orders
+
+--4. How many of each type of pizza was delivered?
+--Count number of pizzas only if cancellation column is NULL. 
+WITH customer_runner_cte AS (
+    SELECT 
+        c.*,  
+        r.runner_id,
+        r.pickup_time,
+        r.distance,
+        r.duration,
+        r.cancellation,
+        p.pizza_name
+    FROM pizza_runner.customer_orders c
+    JOIN pizza_runner.runner_orders r 
+        ON c.order_id = r.order_id
+    JOIN pizza_runner.pizza_names p 
+        ON c.pizza_id = p.pizza_id
+)
+
+SELECT 
+    order_id,
+    pizza_name,
+    COUNT(pizza_id) AS successful_pizza
+FROM customer_runner_cte
+WHERE cancellation IS NULL
+GROUP BY pizza_id
+
+-- 5. How many Vegetarian and Meatlovers were ordered by each customer?
+--assumption: included all orders, even cancelled. 
+SELECT 
+    c.customer_id,
+    p.pizza_name,
+    count(c.pizza_id) as pizza_count
+FROM pizza_runner.customer_orders c
+JOIN pizza_runner.runner_orders r ON c.order_id = r.order_id
+JOIN pizza_runner.pizza_names p ON c.pizza_id = p.pizza_id
+GROUP BY c.customer_id, p.pizza_name
+ORDER BY c.customer_id 
+
+-- 6. What was the maximum number of pizzas delivered in a single order?
+
+WITH customer_runner_cte AS (
+    SELECT 
+        c.*,  
+        r.runner_id,
+        r.pickup_time,
+        r.distance,
+        r.duration,
+        r.cancellation,
+        p.pizza_name
+    FROM pizza_runner.customer_orders c
+    JOIN pizza_runner.runner_orders r 
+        ON c.order_id = r.order_id
+    JOIN pizza_runner.pizza_names p 
+        ON c.pizza_id = p.pizza_id
+)
