@@ -15,8 +15,8 @@ VALUES
   (4, '2021-01-15');
 
 
-DROP TABLE IF EXISTS customer_orders;
-CREATE TABLE customer_orders (
+DROP TABLE IF EXISTS pizza_runner.customer_orders;
+CREATE TABLE pizza_runner.customer_orders (
   "order_id" INTEGER,
   "customer_id" INTEGER,
   "pizza_id" INTEGER,
@@ -25,7 +25,7 @@ CREATE TABLE customer_orders (
   "order_time" TIMESTAMP
 );
 
-INSERT INTO customer_orders
+INSERT INTO pizza_runner.customer_orders
   ("order_id", "customer_id", "pizza_id", "exclusions", "extras", "order_time")
 VALUES
   ('1', '101', '1', '', '', '2020-01-01 18:05:02'),
@@ -44,8 +44,8 @@ VALUES
   ('10', '104', '1', '2, 6', '1, 4', '2020-01-11 18:34:49');
 
 
-DROP TABLE IF EXISTS runner_orders;
-CREATE TABLE runner_orders (
+DROP TABLE IF EXISTS pizza_runner.runner_orders;
+CREATE TABLE pizza_runner.runner_orders (
   "order_id" INTEGER,
   "runner_id" INTEGER,
   "pickup_time" VARCHAR(19),
@@ -54,7 +54,7 @@ CREATE TABLE runner_orders (
   "cancellation" VARCHAR(23)
 );
 
-INSERT INTO runner_orders
+INSERT INTO pizza_runner.runner_orders
   ("order_id", "runner_id", "pickup_time", "distance", "duration", "cancellation")
 VALUES
   ('1', '1', '2020-01-01 18:15:34', '20km', '32 minutes', ''),
@@ -114,6 +114,7 @@ VALUES
   (11, 'Tomatoes'),
   (12, 'Tomato Sauce');
 
+-- clean null values from customer_order and runner_orders tables
 SELECT *
 FROM pizza_runner.customer_orders
 
@@ -131,12 +132,20 @@ SELECT *
 FROM pizza_runner.customer_orders
 WHERE exclusions IS NULL
 
--- set all blanks or string "nulls" to NULL
+--set all blanks or string 'null' to NULL
 UPDATE pizza_runner.customer_orders
 SET 
-    exclusions = NULL,
-    extras = NULL
-WHERE 
-    exclusions = 'null' OR exclusions = '' OR
-    extras = 'null' OR extras = '';
+    exclusions = CASE WHEN exclusions = 'null' OR exclusions = '' THEN NULL ELSE exclusions END,
+    extras = CASE WHEN extras = 'null' OR extras = '' THEN NULL ELSE extras END;
+   
 
+--set all blanks or string 'null' to NULL
+SELECT * 
+FROM pizza_runner.runner_orders
+
+UPDATE pizza_runner.runner_orders
+SET 
+  pickup_time = CASE WHEN pickup_time = 'null' OR pickup_time = '' THEN NULL ELSE pickup_time END,
+  distance = CASE WHEN distance = 'null' OR distance = '' THEN NULL ELSE distance END,
+  duration = CASE WHEN duration = 'null' OR duration = '' THEN NULL ELSE duration END,
+  cancellation = CASE WHEN cancellation = 'null' OR cancellation = '' THEN NULL ELSE cancellation END;
