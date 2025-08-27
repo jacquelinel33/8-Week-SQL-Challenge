@@ -206,19 +206,10 @@ GROUP BY c.customer_id, p.pizza_name
 ORDER BY c.customer_id 
 
 -- 6. What was the maximum number of pizzas delivered in a single order?
-
-WITH customer_runner_cte AS (
-    SELECT 
-        c.*,  
-        r.runner_id,
-        r.pickup_time,
-        r.distance,
-        r.duration,
-        r.cancellation,
-        p.pizza_name
-    FROM pizza_runner.customer_orders c
-    JOIN pizza_runner.runner_orders r 
-        ON c.order_id = r.order_id
-    JOIN pizza_runner.pizza_names p 
-        ON c.pizza_id = p.pizza_id
-)
+SELECT 
+    MAX(pizza_count)
+ FROM
+    (SELECT
+        COUNT(pizza_id) as pizza_count
+    FROM pizza_runner.customer_orders
+    GROUP BY order_id) AS pcount_table
