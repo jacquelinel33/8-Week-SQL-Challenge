@@ -225,3 +225,27 @@ SELECT
 FROM pizza_runner.customer_orders
 GROUP BY customer_id
 ORDER BY customer_id;
+
+-- 8. How many pizzas were delivered that had both exclusions and extras?
+-- Select only delivered pizza's (not cancelled)
+
+-- join the customer and runner table and filter out the cancelled orders
+WITH runner_order_cte AS (
+    SELECT 
+        c.order_id,
+        c.exclusions,
+        c.extras
+    FROM pizza_runner.customer_orders c
+    JOIN pizza_runner.runner_orders r
+    ON c.order_id = r.order_id
+    WHERE r.cancellation IS NULL
+)
+
+SELECT 
+    COUNT(CASE
+            WHEN exclusions IS NOT NULL
+            AND extras IS NOT NULL
+            THEN 1
+            END) as count
+FROM runner_order_cte 
+    
