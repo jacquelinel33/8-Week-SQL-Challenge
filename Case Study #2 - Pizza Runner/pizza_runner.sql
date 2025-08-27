@@ -213,3 +213,15 @@ SELECT
         COUNT(pizza_id) as pizza_count
     FROM pizza_runner.customer_orders
     GROUP BY order_id) AS pcount_table
+
+--7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+--If there are exclusions or extras, that is considered a change
+SELECT 
+    customer_id,
+    COUNT(CASE 
+              WHEN exclusions IS NOT NULL OR extras IS NOT NULL 
+              THEN pizza_id
+         END) AS count
+FROM pizza_runner.customer_orders
+GROUP BY customer_id
+ORDER BY customer_id;
