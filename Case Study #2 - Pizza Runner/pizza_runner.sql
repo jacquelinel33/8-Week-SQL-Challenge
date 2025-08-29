@@ -280,3 +280,12 @@ GROUP BY DOW, pizza_id
 --B. Runner and Customer Experience
 
 --1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
+
+-- Calculate the week period by finding the difference between the registration_date column and the start week. Divide those days by 7 to convert  days into weeks. Add 1 so the week_period starts at 1 (not 0).
+SELECT   
+ FLOOR((registration_date::date - DATE '2021-01-01') / 7) + 1 AS week_period,
+ COUNT(DISTINCT runner_id) as runner_count
+FROM pizza_runner.runners
+GROUP BY week_period
+ORDER BY week_period
+

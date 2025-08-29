@@ -1,6 +1,6 @@
 # Case Study #2: Pizza Runner
 
-**Source:** [8 Week SQL Challenge - Case Study #1](https://8weeksqlchallenge.com/case-study-2)
+**Source:** [8 Week SQL Challenge - Case Study #2](https://8weeksqlchallenge.com/case-study-2)
 
 ### Create schema and tables
 ```sql
@@ -121,36 +121,33 @@ VALUES
   (12, 'Tomato Sauce');
 ```
 
-### clean null values from customer_order and runner_orders tables
+### Clean null values from customer_order and runner_orders tables
+View customer_orders table
 ``` sql
 SELECT *
 FROM pizza_runner.customer_orders
 ```
 
-### Count number of null values in column
+Count number of null values in column
 ``` sql
 SELECT COUNT(*) as NullCount
 FROM pizza_runner.customer_orders
 WHERE exclusions IS NULL
-
-SELECT COUNT(*) as NullCount
-FROM pizza_runner.customer_orders
-WHERE exclusions IS NULL
 ```
-### Check for NULL data types in column
+Check for NULL data types in column
 ``` sql
 SELECT *
 FROM pizza_runner.customer_orders
 WHERE exclusions IS NULL
 ```
-### set all blanks or string 'null' to NULL
+Set all blanks or string 'null' to NULL in customer_orders
 ``` sql
 UPDATE pizza_runner.customer_orders
 SET 
     exclusions = CASE WHEN exclusions = 'null' OR exclusions = '' THEN NULL ELSE exclusions END,
     extras = CASE WHEN extras = 'null' OR extras = '' THEN NULL ELSE extras END;
 ``` 
-### set all blanks or string 'null' to NULL
+Set all blanks or string 'null' to NULL in runner_orders
 ``` sql
 SELECT * 
 FROM pizza_runner.runner_orders
@@ -211,6 +208,7 @@ FROM customer_runner_cte
 WHERE cancellation IS NULL
 GROUP BY pizza_id
 ```
+
 ### 5. How many Vegetarian and Meatlovers were ordered by each customer?
 assumption: included all orders, even cancelled. 
 ``` sql
