@@ -248,4 +248,31 @@ SELECT
             THEN 1
             END) as count
 FROM runner_order_cte 
-    
+
+-- 9. What was the total volume of pizzas ordered for each hour of the day? 
+
+SELECT 
+    extract(HOUR FROM r.pickup_time::time) as hour_of_day,
+    COUNT(c.pizza_id)
+FROM pizza_runner.runner_orders r
+JOIN pizza_runner.customer_orders c
+ON  r.order_id = c.order_id
+WHERE r.pickup_time IS NOT NULL
+GROUP BY hour_of_day
+ORDER BY hour_of_day
+
+-- 10. What was the volume of orders for each day of the week?
+--volume of orders
+SELECT 
+    TO_CHAR(c.order_time::timestamp, 'Day') AS DOW,
+    COUNT( DISTINCT order_id) as order_volume
+FROM pizza_runner.customer_orders c
+GROUP BY DOW
+
+--volume of pizza orders by id and dow
+SELECT 
+    TO_CHAR(c.order_time::timestamp, 'Day') AS DOW,
+    pizza_id,
+    COUNT(pizza_id) as pizza_volume
+FROM pizza_runner.customer_orders c
+GROUP BY DOW, pizza_id
