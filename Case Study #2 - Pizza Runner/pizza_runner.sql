@@ -150,8 +150,8 @@ SET
   duration = CASE WHEN duration = 'null' OR duration = '' THEN NULL ELSE duration END,
   cancellation = CASE WHEN cancellation = 'null' OR cancellation = '' THEN NULL ELSE cancellation END;
 
-SELECT *
-FROM customer_runner_cte
+-- A. Pizza Metrics
+
 --1. How many pizzas were ordered?
 -- Count all pizza orders from customer_orders
 SELECT count(pizza_id)
@@ -276,3 +276,7 @@ SELECT
     COUNT(pizza_id) as pizza_volume
 FROM pizza_runner.customer_orders c
 GROUP BY DOW, pizza_id
+
+--B. Runner and Customer Experience
+
+--1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
