@@ -166,26 +166,26 @@ SET
 ## A. Pizza Metrics
 
 ## 1. How many pizzas were ordered?
-### Count all pizza orders from customer_orders
+Count all pizza orders from customer_orders
 ``` sql
 SELECT count(pizza_id)
 FROM pizza_runner.customer_orders
 ```
 ## 2. How many unique customer orders were made?
-## Count number of distinct orders
+Count number of distinct orders
 ``` sql
 SELECT count(DISTINCT order_id)
 FROM pizza_runner.customer_orders
 ```
 ## 3. How many successful orders were delivered by each runner?
-## Use cancellation column as metric of successful order. If cancellation is null, then the order was successful
+Use cancellation column as metric of successful order. If cancellation is null, then the order was successful
 ``` sql
 SELECT count(CASE WHEN cancellation IS NULL THEN 1 END) as successful_orders_count
 FROM pizza_runner.runner_orders
 ```
 
 ## 4. How many of each type of pizza was delivered?
-## Count number of pizzas only if cancellation column is NULL. 
+Count number of pizzas only if cancellation column is NULL. 
 ``` sql
 WITH customer_runner_cte AS (
     SELECT 
@@ -212,7 +212,7 @@ WHERE cancellation IS NULL
 GROUP BY pizza_id
 ```
 ## 5. How many Vegetarian and Meatlovers were ordered by each customer?
-### assumption: included all orders, even cancelled. 
+assumption: included all orders, even cancelled. 
 ``` sql
 SELECT 
     c.customer_id,
@@ -236,7 +236,7 @@ SELECT
     GROUP BY order_id) AS pcount_table
 ```
 ## 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
-###  If there are exclusions or extras, that is considered a change
+If there are exclusions or extras, that is considered a change
 ``` sql
 SELECT 
     customer_id,
@@ -252,7 +252,7 @@ ORDER BY customer_id;
 ## 8. How many pizzas were delivered that had both exclusions and extras?
 Select only delivered pizza's (not cancelled)
 
-### join the customer and runner table and filter out the cancelled orders
+Join the customer and runner table and filter out the cancelled orders.
 ``` sql
 WITH runner_order_cte AS (
     SELECT 
@@ -297,7 +297,7 @@ SELECT
 FROM pizza_runner.customer_orders c
 GROUP BY DOW
 ```
-### volume of pizza orders by id and dow
+volume of pizza orders by id and dow
 ``` sql
 SELECT 
     TO_CHAR(c.order_time::timestamp, 'Day') AS DOW,
