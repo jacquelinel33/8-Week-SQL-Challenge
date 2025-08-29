@@ -121,13 +121,13 @@ VALUES
   (12, 'Tomato Sauce');
 ```
 
-## clean null values from customer_order and runner_orders tables
+### clean null values from customer_order and runner_orders tables
 ``` sql
 SELECT *
 FROM pizza_runner.customer_orders
 ```
 
-## Count number of null values in column
+### Count number of null values in column
 ``` sql
 SELECT COUNT(*) as NullCount
 FROM pizza_runner.customer_orders
@@ -137,20 +137,20 @@ SELECT COUNT(*) as NullCount
 FROM pizza_runner.customer_orders
 WHERE exclusions IS NULL
 ```
-## Check for NULL data types in column
+### Check for NULL data types in column
 ``` sql
 SELECT *
 FROM pizza_runner.customer_orders
 WHERE exclusions IS NULL
 ```
-## set all blanks or string 'null' to NULL
+### set all blanks or string 'null' to NULL
 ``` sql
 UPDATE pizza_runner.customer_orders
 SET 
     exclusions = CASE WHEN exclusions = 'null' OR exclusions = '' THEN NULL ELSE exclusions END,
     extras = CASE WHEN extras = 'null' OR extras = '' THEN NULL ELSE extras END;
 ``` 
-## set all blanks or string 'null' to NULL
+### set all blanks or string 'null' to NULL
 ``` sql
 SELECT * 
 FROM pizza_runner.runner_orders
@@ -165,26 +165,26 @@ SET
 
 ## A. Pizza Metrics
 
-## 1. How many pizzas were ordered?
+### 1. How many pizzas were ordered?
 Count all pizza orders from customer_orders
 ``` sql
 SELECT count(pizza_id)
 FROM pizza_runner.customer_orders
 ```
-## 2. How many unique customer orders were made?
+### 2. How many unique customer orders were made?
 Count number of distinct orders
 ``` sql
 SELECT count(DISTINCT order_id)
 FROM pizza_runner.customer_orders
 ```
-## 3. How many successful orders were delivered by each runner?
+### 3. How many successful orders were delivered by each runner?
 Use cancellation column as metric of successful order. If cancellation is null, then the order was successful
 ``` sql
 SELECT count(CASE WHEN cancellation IS NULL THEN 1 END) as successful_orders_count
 FROM pizza_runner.runner_orders
 ```
 
-## 4. How many of each type of pizza was delivered?
+### 4. How many of each type of pizza was delivered?
 Count number of pizzas only if cancellation column is NULL. 
 ``` sql
 WITH customer_runner_cte AS (
@@ -211,7 +211,7 @@ FROM customer_runner_cte
 WHERE cancellation IS NULL
 GROUP BY pizza_id
 ```
-## 5. How many Vegetarian and Meatlovers were ordered by each customer?
+### 5. How many Vegetarian and Meatlovers were ordered by each customer?
 assumption: included all orders, even cancelled. 
 ``` sql
 SELECT 
@@ -225,7 +225,7 @@ GROUP BY c.customer_id, p.pizza_name
 ORDER BY c.customer_id 
 ```
 
-## 6. What was the maximum number of pizzas delivered in a single order?
+### 6. What was the maximum number of pizzas delivered in a single order?
 ``` sql
 SELECT 
     MAX(pizza_count)
@@ -235,7 +235,7 @@ SELECT
     FROM pizza_runner.customer_orders
     GROUP BY order_id) AS pcount_table
 ```
-## 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+### 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 If there are exclusions or extras, that is considered a change
 ``` sql
 SELECT 
@@ -249,7 +249,7 @@ GROUP BY customer_id
 ORDER BY customer_id;
 ```
 
-## 8. How many pizzas were delivered that had both exclusions and extras?
+### 8. How many pizzas were delivered that had both exclusions and extras?
 Select only delivered pizza's (not cancelled)
 
 Join the customer and runner table and filter out the cancelled orders.
@@ -274,7 +274,7 @@ SELECT
 FROM runner_order_cte 
 ```
 
-## 9. What was the total volume of pizzas ordered for each hour of the day? 
+### 9. What was the total volume of pizzas ordered for each hour of the day? 
 
 ``` sql
 SELECT 
@@ -288,8 +288,8 @@ GROUP BY hour_of_day
 ORDER BY hour_of_day
 ```
 
-##  10. What was the volume of orders for each day of the week?
-### volume of orders
+###  10. What was the volume of orders for each day of the week?
+volume of orders
 ``` sql
 SELECT 
     TO_CHAR(c.order_time::timestamp, 'Day') AS DOW,
@@ -309,4 +309,4 @@ GROUP BY DOW, pizza_id
 
 ## B. Runner and Customer Experience
 
-## 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
+### 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
