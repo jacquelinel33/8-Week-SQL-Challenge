@@ -122,10 +122,13 @@ VALUES
 ```
 
 ## clean null values from customer_order and runner_orders tables
+``` sql
 SELECT *
 FROM pizza_runner.customer_orders
+```
 
 ## Count number of null values in column
+``` sql
 SELECT COUNT(*) as NullCount
 FROM pizza_runner.customer_orders
 WHERE exclusions IS NULL
@@ -133,20 +136,22 @@ WHERE exclusions IS NULL
 SELECT COUNT(*) as NullCount
 FROM pizza_runner.customer_orders
 WHERE exclusions IS NULL
-
+```
 ## Check for NULL data types in column
+``` sql
 SELECT *
 FROM pizza_runner.customer_orders
 WHERE exclusions IS NULL
-
+```
 ## set all blanks or string 'null' to NULL
+``` sql
 UPDATE pizza_runner.customer_orders
 SET 
     exclusions = CASE WHEN exclusions = 'null' OR exclusions = '' THEN NULL ELSE exclusions END,
     extras = CASE WHEN extras = 'null' OR extras = '' THEN NULL ELSE extras END;
-   
-
+``` 
 ## set all blanks or string 'null' to NULL
+``` sql
 SELECT * 
 FROM pizza_runner.runner_orders
 
@@ -156,26 +161,32 @@ SET
   distance = CASE WHEN distance = 'null' OR distance = '' THEN NULL ELSE distance END,
   duration = CASE WHEN duration = 'null' OR duration = '' THEN NULL ELSE duration END,
   cancellation = CASE WHEN cancellation = 'null' OR cancellation = '' THEN NULL ELSE cancellation END;
+```
 
 ## A. Pizza Metrics
 
 ## 1. How many pizzas were ordered?
 ### Count all pizza orders from customer_orders
+``` sql
 SELECT count(pizza_id)
 FROM pizza_runner.customer_orders
-
+```
 ## 2. How many unique customer orders were made?
 ## Count number of distinct orders
+``` sql
 SELECT count(DISTINCT order_id)
 FROM pizza_runner.customer_orders
-
+```
 ## 3. How many successful orders were delivered by each runner?
 ## Use cancellation column as metric of successful order. If cancellation is null, then the order was successful
+``` sql
 SELECT count(CASE WHEN cancellation IS NULL THEN 1 END) as successful_orders_count
 FROM pizza_runner.runner_orders
+```
 
 ## 4. How many of each type of pizza was delivered?
 ## Count number of pizzas only if cancellation column is NULL. 
+``` sql
 WITH customer_runner_cte AS (
     SELECT 
         c.*,  
@@ -199,9 +210,10 @@ SELECT
 FROM customer_runner_cte
 WHERE cancellation IS NULL
 GROUP BY pizza_id
-
+```
 ## 5. How many Vegetarian and Meatlovers were ordered by each customer?
 ### assumption: included all orders, even cancelled. 
+``` sql
 SELECT 
     c.customer_id,
     p.pizza_name,
@@ -211,8 +223,10 @@ JOIN pizza_runner.runner_orders r ON c.order_id = r.order_id
 JOIN pizza_runner.pizza_names p ON c.pizza_id = p.pizza_id
 GROUP BY c.customer_id, p.pizza_name
 ORDER BY c.customer_id 
+```
 
 ## 6. What was the maximum number of pizzas delivered in a single order?
+``` sql
 SELECT 
     MAX(pizza_count)
  FROM
@@ -220,9 +234,10 @@ SELECT
         COUNT(pizza_id) as pizza_count
     FROM pizza_runner.customer_orders
     GROUP BY order_id) AS pcount_table
-
+```
 ## 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 ###  If there are exclusions or extras, that is considered a change
+``` sql
 SELECT 
     customer_id,
     COUNT(CASE 
@@ -232,11 +247,13 @@ SELECT
 FROM pizza_runner.customer_orders
 GROUP BY customer_id
 ORDER BY customer_id;
+```
 
 ## 8. How many pizzas were delivered that had both exclusions and extras?
 ## Select only delivered pizza's (not cancelled)
 
 ## join the customer and runner table and filter out the cancelled orders
+``` sql
 WITH runner_order_cte AS (
     SELECT 
         c.order_id,
@@ -255,6 +272,7 @@ SELECT
             THEN 1
             END) as count
 FROM runner_order_cte 
+```
 
 ## 9. What was the total volume of pizzas ordered for each hour of the day? 
 
