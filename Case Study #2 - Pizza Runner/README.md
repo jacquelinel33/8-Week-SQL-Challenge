@@ -250,9 +250,9 @@ ORDER BY customer_id;
 ```
 
 ## 8. How many pizzas were delivered that had both exclusions and extras?
-## Select only delivered pizza's (not cancelled)
+Select only delivered pizza's (not cancelled)
 
-## join the customer and runner table and filter out the cancelled orders
+### join the customer and runner table and filter out the cancelled orders
 ``` sql
 WITH runner_order_cte AS (
     SELECT 
