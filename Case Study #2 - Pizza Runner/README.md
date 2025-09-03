@@ -308,3 +308,18 @@ GROUP BY DOW, pizza_id
 ## B. Runner and Customer Experience
 
 ### 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
+```sql
+SELECT   
+ FLOOR((registration_date::date - DATE '2021-01-01') / 7) + 1 AS week_period,
+ COUNT(DISTINCT runner_id) as runner_count
+FROM pizza_runner.runners
+GROUP BY week_period
+ORDER BY week_period
+```
+| week_period | runner_count |
+| ----------- | ------------ |
+| 1           | 2            |
+| 2           | 1            |
+| 3           | 1            |
+
+

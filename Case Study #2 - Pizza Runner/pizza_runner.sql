@@ -289,3 +289,9 @@ FROM pizza_runner.runners
 GROUP BY week_period
 ORDER BY week_period
 
+--2. What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
+SELECT
+  runner_id,
+  AVG(duration)
+FROM pizza_runner.runner_orders
+GROUP BY runner_id
