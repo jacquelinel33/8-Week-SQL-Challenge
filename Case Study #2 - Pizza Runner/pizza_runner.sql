@@ -150,6 +150,16 @@ SET
   duration = CASE WHEN duration = 'null' OR duration = '' THEN NULL ELSE duration END,
   cancellation = CASE WHEN cancellation = 'null' OR cancellation = '' THEN NULL ELSE cancellation END;
 
+-- Standardize distance and duration column
+--rename duration column 
+ALTER TABLE pizza_runner.runner_orders
+RENAME COLUMN duration TO duration_min;
+
+-- remove minute from rows and change data type to numeric
+UPDATE pizza_runner.runner_orders
+SET duration_min = regexp_replace(duration_min,'[^0-9]', '', 'g')
+
+
 -- A. Pizza Metrics
 
 --1. How many pizzas were ordered?
@@ -292,6 +302,7 @@ ORDER BY week_period
 --2. What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
 SELECT
   runner_id,
-  AVG(duration)
+  ROUND(AVG(duration_min::NUMERIC)) as avg_runner_duration
 FROM pizza_runner.runner_orders
-GROUP BY runner_id
+GROUP BY runner_id 
+ORDER BY runner_id
