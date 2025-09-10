@@ -307,3 +307,24 @@ FROM pizza_runner.runner_orders
 GROUP BY runner_id 
 ORDER BY runner_id
 
+--3. Is there any relationship between the number of pizzas and how long the order takes to prepare?
+-- Calculate time to prepare order by subtracking pickup_time from order_time
+WITH num_pizza_cte AS (
+  SELECT 
+  order_id,
+  COUNT(pizza_id) as num_pizza,
+  order_time
+FROM pizza_runner.customer_orders
+GROUP BY order_id, order_time
+ORDER BY order_id
+)
+
+SELECT  
+  c.order_id,
+  c.num_pizza,
+  round(extract(epoch FROM (r.pickup_time::timestamp - c.order_time::timestamp)) / 60, 1) AS time_to_prepare_min
+FROM num_pizza_cte as c
+JOIN pizza_runner.runner_orders as r
+ON c.order_id = r.order_id
+ORDER BY time_to_prepare_min DESC, num_pizza DESC
+
