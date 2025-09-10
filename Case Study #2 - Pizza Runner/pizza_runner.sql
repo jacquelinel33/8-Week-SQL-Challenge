@@ -302,7 +302,8 @@ ORDER BY week_period
 --2. What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
 SELECT
   runner_id,
-  ROUND(AVG(duration_min::NUMERIC)) as avg_runner_duration
+  ROUND(AVG(duration_min::NUMERIC)) as avg_duration_min
 FROM pizza_runner.runner_orders
 GROUP BY runner_id 
 ORDER BY runner_id
+
