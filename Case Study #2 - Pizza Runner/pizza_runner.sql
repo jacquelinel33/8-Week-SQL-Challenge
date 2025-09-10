@@ -319,12 +319,17 @@ GROUP BY order_id, order_time
 ORDER BY order_id
 )
 
-SELECT  
-  c.order_id,
-  c.num_pizza,
-  round(extract(epoch FROM (r.pickup_time::timestamp - c.order_time::timestamp)) / 60, 1) AS time_to_prepare_min
-FROM num_pizza_cte as c
-JOIN pizza_runner.runner_orders as r
-ON c.order_id = r.order_id
-ORDER BY time_to_prepare_min DESC, num_pizza DESC
+SELECT *
+FROM (
+  SELECT  
+    c.order_id,
+    c.num_pizza,
+    ROUND(EXTRACT(EPOCH FROM (r.pickup_time::timestamp - c.order_time::timestamp)) / 60, 1) AS time_to_prepare_min
+  FROM num_pizza_cte AS c
+  JOIN pizza_runner.runner_orders AS r
+  ON c.order_id = r.order_id
+) AS sub
+WHERE time_to_prepare_min IS NOT NULL
+ORDER BY time_to_prepare_min DESC, num_pizza DESC;
+
 

@@ -372,6 +372,7 @@ FROM num_pizza_cte as c
 JOIN pizza_runner.runner_orders as r
 ON c.order_id = r.order_id
 ORDER BY time_to_prepare_min DESC, num_pizza DESC
+WHERE time_to_prepare_min IS NOT NULL
 ```
 integer | num_pizza | time_to_prepare_min
 | ----- | - | ------------ | 
