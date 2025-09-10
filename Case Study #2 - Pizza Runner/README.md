@@ -345,8 +345,8 @@ GROUP BY runner_id
 ORDER BY runner_id
 ```
 
-|integer | avg_duration_min|
-| ------ | --------- | 
-| 1      | 22        |
-| 2      | 27        |
-| 3      | 15        |
+|runner_id | avg_duration_min|
+| ---------- | --------------| 
+| 1          | 22            |
+| 2          | 27            |
+| 3          | 15            |
